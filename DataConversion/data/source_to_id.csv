@@ -1,0 +1,99 @@
+Feitian JavaCOS A22 1024b;0
+Feitian JavaCOS A22 512b;0
+Feitian JavaCOS A40 1024b;1
+Feitian JavaCOS A40 512b;1
+G&D SmartCafe 3.2 1024b;2
+G&D SmartCafe 3.2 512b;2
+G&D SmartCafe 4.x 1024b;3
+G&D SmartCafe 4.x 512b;3
+G&D SmartCafe 6.0 1024b;4
+G&D SmartCafe 6.0 512b;4
+Gemalto GCX4 72K 1024b;5
+Gemalto GCX4 72K 512b;5
+Gemalto GXP E64 1024b;6
+Gemalto GXP E64 512b;6
+Infineon JTOP 80K 1024b;7
+Infineon JTOP 80K 512b;7
+NXP J2A080 1024b;8
+NXP J2A080 512b;8
+NXP J2A081 1024b;9
+NXP J2A081 512b;9
+NXP J2D081 1024b;10
+NXP J2D081 512b;10
+NXP J2E145G 1024b;11
+NXP J2E145G 512b;11
+NXP J3A081 1024b;12
+NXP J3A081 512b;12
+NXP JCOP 41 V2.2.1 1024b;13
+NXP JCOP 41 V2.2.1 512b;13
+Oberthur Cosmo 64 1024b;14
+Oberthur Cosmo Dual 72K 1024b;15
+Oberthur Cosmo Dual 72K 512b;15
+SafeNet Luna SA-1700 LAN;16
+Utimaco Security Server Se50 LAN Appliance;17
+Botan_1-11-29_1024;18
+Botan_1-11-29_2048;18
+Botan_1-11-29_512;18
+Bouncy_Castle_1-53_1024;19
+Bouncy_Castle_1-53_2048;19
+Bouncy_Castle_1-53_512;19
+Bouncy_Castle_1-54_1024;20
+Bouncy_Castle_1-54_2048;20
+Bouncy_Castle_1-54_512;20
+Cryptix_JCE_20050328_1024;21
+Cryptix_JCE_20050328_2048;21
+Cryptix_JCE_20050328_512;21
+cryptlib_3-4-3_1024;22
+cryptlib_3-4-3_2048;22
+cryptlib_3-4-3_512;22
+Crypto++_5-6-3_1024;23
+Crypto++_5-6-3_2048;23
+Crypto++_5-6-3_512;23
+FlexiProvider_1-7p7_1024;24
+FlexiProvider_1-7p7_2048;24
+FlexiProvider_1-7p7_512;24
+GNU_Crypto_2-0-1_1024;25
+GNU_Crypto_2-0-1_2048;25
+GNU_Crypto_2-0-1_512;25
+GPG_Libgcrypt_1-6-5_1024;26
+GPG_Libgcrypt_1-6-5_2048;26
+GPG_Libgcrypt_1-6-5_512;26
+GPG_Libgcrypt_1-6-5_FIPS_1024;27
+GPG_Libgcrypt_1-6-5_FIPS_2048;27
+GPG_Libgcrypt_1-6-5_FIPS_512;27
+LibTomCrypt_1-17_1024;28
+LibTomCrypt_1-17_2048;28
+LibTomCrypt_1-17_512;28
+mbedTLS_2-2-1_1024;29
+mbedTLS_2-2-1_2048;29
+mbedTLS_2-2-1_512;29
+Microsoft_CNG_1024;30
+Microsoft_CNG_2048;30
+Microsoft_CNG_512;30
+Microsoft_CryptoAPI_1024;31
+Microsoft_CryptoAPI_2048;31
+Microsoft_CryptoAPI_512;31
+Microsoft_.NET_1024;32
+Microsoft_.NET_2048;32
+Microsoft_.NET_512;32
+Nettle_3-2_1024;33
+Nettle_3-2_2048;33
+Nettle_3-2_512;33
+OpenSSL_1-0-2g_1024;34
+OpenSSL_1-0-2g_2048;34
+OpenSSL_1-0-2g_512;34
+OpenSSL_FIPS_2-0-12_1024;35
+OpenSSL_FIPS_2-0-12_2048;35
+OpenSSL_FIPS_2-0-12_512;35
+PGP_SDK_4_1024;36
+PGP_SDK_4_2048;36
+PGP_SDK_4_512;36
+PGP_SDK_4_FIPS_1024;37
+PGP_SDK_4_FIPS_2048;37
+PGP_SDK_4_FIPS_512;37
+SunRsaSign_OpenJDK_1-8_1024;38
+SunRsaSign_OpenJDK_1-8_2048;38
+SunRsaSign_OpenJDK_1-8_512;38
+WolfSSL_3-9-0_1024;39
+WolfSSL_3-9-0_2048;39
+WolfSSL_3-9-0_512;39
