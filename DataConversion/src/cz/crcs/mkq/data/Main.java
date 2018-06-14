@@ -1,6 +1,7 @@
 package cz.crcs.mkq.data;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.file.FileSystemNotFoundException;
 import java.util.HashMap;
 import java.util.InvalidPropertiesFormatException;
@@ -12,10 +13,15 @@ public class Main {
 
     private static final String SEPARATOR = ";";
     private static final int MODULUS_INDEX = 1;
+    private static final int MSB = 16;
+    private static final int LSB = 8;
+    private static final BigInteger[] DIVISORS = new BigInteger[]{BigInteger.valueOf(3),
+            BigInteger.valueOf(5), BigInteger.valueOf(7), BigInteger.valueOf(11),
+                    BigInteger.valueOf(13), BigInteger.valueOf(17), BigInteger.valueOf(19)};
 
     public static void main(String[] args) throws FileNotFoundException {
         if (args.length < 4) {
-            System.err.println("Arguments: rootDirectory outputFile sourceToIdPath sourceToGroupPath [maxKeys [skipKeys]]");
+            System.err.println("Arguments: rootDirectory outputFile sourceToIdPath sourceToGroupPath [maxKeys [skipKeys [balance]]]");
             return;
         }
         File root = new File(args[0]);
@@ -24,17 +30,28 @@ public class Main {
         File sourceToGroupPath = new File(args[3]);
         int maxKeyCount = 0;
         int skipKeys = 0;
+        boolean balanceGroupsNotSources = false;
         if (args.length > 4) {
             maxKeyCount = Integer.valueOf(args[4]);
             if (args.length > 5) {
                 skipKeys = Integer.valueOf(args[5]);
+                if (args.length > 6) {
+                    if ("source".equals(args[6])) {
+                        balanceGroupsNotSources = false;
+                    } else if ("group".equals(args[6])) {
+                        balanceGroupsNotSources = true;
+                    } else {
+                        throw new IllegalArgumentException("Cannot balance by " + args[6]);
+                    }
+                }
             }
         }
-        process(root, output, sourceToIdPath, sourceToGroupPath, maxKeyCount, skipKeys);
+        process(root, output, sourceToIdPath, sourceToGroupPath, maxKeyCount, skipKeys, balanceGroupsNotSources);
     }
 
-    public static void process(File root, OutputStreamWriter output,
-                               File sourceToIdPath, File sourceToGroupPath, int maxKeyCount, int skipKeys) {
+    private static void process(File root, OutputStreamWriter output,
+                               File sourceToIdPath, File sourceToGroupPath, int maxKeyCount, int skipKeys,
+                               boolean balanceGroupsNotSources) {
         if (!root.isDirectory() || !root.exists()) throw new IllegalArgumentException("root not a directory or does not exist");
         File[] directories = root.listFiles(File::isDirectory);
         if (null == directories) throw new IllegalArgumentException("root contains no directories");
@@ -43,7 +60,9 @@ public class Main {
         Map<Integer, Integer> sourceToSkipped = new HashMap<>();
         Map<Integer, Integer> sourceToOutput = new HashMap<>();
         try {
-            output.write("modulus;group;source\n");
+            String start = headerFeatures(MSB, LSB, DIVISORS);
+            start += "group" + SEPARATOR + "source\n";
+            output.write(start);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
@@ -58,8 +77,12 @@ public class Main {
                     System.err.println(String.format("source or group undefined %s", sourceDirectory));
                     continue;
                 }
-                int skipped = sourceToSkipped.getOrDefault(id, 0);
-                int printed = sourceToOutput.getOrDefault(id, 0);
+                Integer counterKey = id;
+                if (balanceGroupsNotSources) {
+                    counterKey = group;
+                }
+                int skipped = sourceToSkipped.getOrDefault(counterKey, 0);
+                int printed = sourceToOutput.getOrDefault(counterKey, 0);
                 int maxSkip = skipKeys - skipped;
                 int maxPrint = maxKeyCount - printed;
                 int processed = processSingle(sourceDirectory, output, id, group, maxPrint, maxSkip);
@@ -69,21 +92,79 @@ public class Main {
                     printed += processed - maxSkip;
                     skipped = skipKeys;
                 }
-                sourceToSkipped.put(id, skipped);
-                sourceToOutput.put(id, printed);
+                sourceToSkipped.put(counterKey, skipped);
+                sourceToOutput.put(counterKey, printed);
             }
         }
 
         sourceToSkipped.forEach((id, skipped) -> {if (skipped < skipKeys)
-            System.err.println(String.format("Not enough keys when skipping group %d: only %d skipped", id, skipped));});
+            System.err.println(String.format("Not enough keys when skipping source/group %d: only %d skipped", id, skipped));});
         sourceToOutput.forEach((id, printed) -> {if (printed < maxKeyCount)
-            System.err.println(String.format("Not enough keys when printing group %d: only %d printed", id, printed));});
+            System.err.println(String.format("Not enough keys when printing source/group %d: only %d printed", id, printed));});
 
         try {
             output.close();
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private static String headerModulus() {
+        return "modulus" + SEPARATOR;
+    }
+
+    private static String extractModulus(String line) {
+        String[] split = line.split(SEPARATOR);
+        return split[MODULUS_INDEX];
+    }
+
+    private static String headerFeatures(int msb, int lsb, BigInteger[] divisors) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < msb; i++) {
+            builder.append("nmsb");
+            builder.append(i+1);
+            builder.append(SEPARATOR);
+        }
+        for (int i = lsb - 1; i >= 0; i--) {
+            builder.append("nlsb");
+            builder.append(i+1);
+            builder.append(SEPARATOR);
+        }
+        builder.append("nblen");
+        builder.append(SEPARATOR);
+        for (BigInteger d : divisors) {
+            builder.append("nmod");
+            builder.append(d.toString());
+            builder.append(SEPARATOR);
+        }
+        return builder.toString();
+    }
+
+    private static String extractFeatures(String line, int msb, int lsb, BigInteger[] divisors) {
+        String[] split = line.split(SEPARATOR);
+        String modulusHex = split[1];
+        BigInteger modulus = new BigInteger(modulusHex, 16);
+        String modulusBin = modulus.toString(2);
+        int bitLength = modulus.bitLength();
+        String msBits = modulusBin.substring(0, msb);
+        String lsBits = modulusBin.substring(bitLength - lsb - 1, bitLength - 1);
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < msb; i++) {
+            builder.append(msBits, i, i+1);
+            builder.append(SEPARATOR);
+        }
+        for (int i = 0; i < lsb; i++) {
+            builder.append(lsBits, i, i+1);
+            builder.append(SEPARATOR);
+        }
+        int nBitLengthDifference = (8 - (bitLength % 8)) % 8;
+        builder.append(nBitLengthDifference);
+        builder.append(SEPARATOR);
+        for (BigInteger d : divisors) {
+            builder.append(modulus.mod(d).toString());
+            builder.append(SEPARATOR);
+        }
+        return builder.toString();
     }
 
     private static int processSingle(File sourceDirectory, OutputStreamWriter output,
@@ -110,10 +191,9 @@ public class Main {
                         skippedKeyCount++;
                         continue;
                     }
-                    String[] split = line.split(SEPARATOR);
                     StringBuilder builder = new StringBuilder();
-                    builder.append(split[MODULUS_INDEX]);
-                    builder.append(SEPARATOR);
+                    String start = extractFeatures(line, MSB, LSB, DIVISORS);
+                    builder.append(start);
                     builder.append(groupId);
                     builder.append(SEPARATOR);
                     builder.append(sourceId);
