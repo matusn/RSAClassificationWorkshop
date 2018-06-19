@@ -13,11 +13,15 @@ public class Main {
 
     private static final String SEPARATOR = ";";
     private static final int MODULUS_INDEX = 1;
-    private static final int MSB = 16;
-    private static final int LSB = 8;
-    private static final BigInteger[] DIVISORS = new BigInteger[]{BigInteger.valueOf(3),
-            BigInteger.valueOf(5), BigInteger.valueOf(7), BigInteger.valueOf(11),
-                    BigInteger.valueOf(13), BigInteger.valueOf(17), BigInteger.valueOf(19)};
+//    private static final int MSB = 16;
+//    private static final int LSB = 8;
+//    private static final BigInteger[] DIVISORS = new BigInteger[]{BigInteger.valueOf(3),
+//            BigInteger.valueOf(5), BigInteger.valueOf(7), BigInteger.valueOf(11),
+//                    BigInteger.valueOf(13), BigInteger.valueOf(17), BigInteger.valueOf(19)};
+
+    private static final int MSB = 6;
+    private static final int LSB = 1;
+    private static final BigInteger[] DIVISORS = new BigInteger[]{BigInteger.valueOf(3)};
 
     public static void main(String[] args) throws FileNotFoundException {
         if (args.length < 4) {
@@ -146,8 +150,8 @@ public class Main {
         BigInteger modulus = new BigInteger(modulusHex, 16);
         String modulusBin = modulus.toString(2);
         int bitLength = modulus.bitLength();
-        String msBits = modulusBin.substring(0, msb);
-        String lsBits = modulusBin.substring(bitLength - lsb - 1, bitLength - 1);
+        String msBits = modulusBin.substring(1, msb + 1);
+        String lsBits = modulusBin.substring(bitLength - lsb - 2, bitLength - 2);
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < msb; i++) {
             builder.append(msBits, i, i+1);
